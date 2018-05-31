@@ -418,7 +418,7 @@ func (t *SimpleChaincode) queryUserByMSP(stub shim.ChaincodeStubInterface, args 
 }
 
 func (t *SimpleChaincode) createPolicy(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	var srcMSP,dstMSP,fromUserEid,toResEid string    // Entities
+	var dstMSP,fromUserEid,toResEid string    // Entities
 	var err error
 
 	objectType := "policy"
@@ -430,40 +430,39 @@ func (t *SimpleChaincode) createPolicy(stub shim.ChaincodeStubInterface, args []
 	}
 	fmt.Printf("MSPID = %s", dstMSP)
 
-	if len(args) != 3 {
-		return shim.Error("Incorrect number of arguments. Expecting toResEid, srcMSP and srcDep")
+	if len(args) != 2 {
+		return shim.Error("Incorrect number of arguments. Expecting toResEid, fromUserEid")
 	}
 
 	toResEid = args[0]
-	srcMSP = args[1]
-	fromUserEid = args[2]
+	fromUserEid = args[1]
 
 	//Check destination EID exists
-	ret, err := checkDepartmentExists(stub,dstMSP,toResEid)
+	ret, err := checkResourceExists(stub,dstMSP,toResEid)
 	if err != nil{
 		fmt.Printf("Error checking if dest Resource exists")
 		return shim.Error(err.Error())
 	}else if ret == false{
-		fmt.Println("Error Resource %s does not exists, create res before", toResEid)
+		fmt.Println("Error Resource %s does not exists for MSP %s, create res before", toResEid,dstMSP)
 		return shim.Error("Error Resource does not exists: " + toResEid)
 	}
 
 	toRes := Resource{"resource",dstMSP,toResEid}
 
 	//Check source user exists
-	ret, err = checkUserExists(stub,srcMSP,fromUserEid)
+	ret, err = checkUserExists(stub,fromUserEid)
 	if err != nil{
 		fmt.Printf("Error checking if user exists")
 		return shim.Error(err.Error())
 	}else if ret == false{
-		fmt.Println("Error User %s does not match, with MSP %s", fromUserEid, srcMSP)
-		return shim.Error("Error User either does not exists or does not match with MSP: " + fromUserEid)
+		fmt.Println("Error User %s not found", fromUserEid)
+		return shim.Error("Error User either does not exists: " + fromUserEid)
 	}
 	
 	//...TO BE CONTINUED: include only composite key
 
-	indexName := "dstmsp~dstres~srcmsp~srcuser"
-	destResSrcUsrIndexKey, err := stub.CreateCompositeKey(indexName, []string{dstMSP,toResEid,srcMSP,fromUserEid})
+	indexName := "dstres~srcuser"
+	destResSrcUsrIndexKey, err := stub.CreateCompositeKey(indexName, []string{toResEid,fromUserEid})
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -487,7 +486,7 @@ func (t *SimpleChaincode) createPolicy(stub shim.ChaincodeStubInterface, args []
 		return shim.Error(err.Error())
 	}
 
-	fmt.Printf("Success creating relation from user = %s MSP = %s; to res = %s MSP = %s\n", fromUserEid, srcMSP, toResEid, dstMSP)
+	fmt.Printf("Success creating relation from user = %s; to res = %s MSP = %s\n", fromUserEid, toResEid, dstMSP)
 
 	return shim.Success(nil)
 }
@@ -497,22 +496,31 @@ func (t *SimpleChaincode) deletePolicy(stub shim.ChaincodeStubInterface, args []
 
 	dstMSP, err := cid.GetMSPID(stub)
 	if err != nil {
-		return shim.Error("In DELTRUST: Error: Failed to get src MSPID")
+		return shim.Error("In DELTRUST: Error: Failed to get dst MSPID")
 	}
 	fmt.Printf("MSPID = %s", dstMSP)
 
-	if len(args) != 3 {
-		return shim.Error("Incorrect number of arguments. Expecting toResEid, srcMSP and srcDep")
+	if len(args) != 2 {
+		return shim.Error("Incorrect number of arguments. Expecting toResEid, fromUserEid")
 	}
 
 	toResEid := args[0]
-	srcMSP := args[1]
-	fromUserEid := args[2]
+	fromUserEid := args[1]
 
-	indexName := "dstmsp~dstres~srcmsp~srcuser"
-	destResSrcUsrIndexKey, err := stub.CreateCompositeKey(indexName, []string{dstMSP,toResEid,srcMSP,fromUserEid})
+	indexName := "dstres~srcuser"
+	destResSrcUsrIndexKey, err := stub.CreateCompositeKey(indexName, []string{toResEid,fromUserEid})
 	if err != nil {
 		return shim.Error(err.Error())
+	}
+
+	//Check destination EID exists
+	ret, err := checkResourceExists(stub,dstMSP,toResEid)
+	if err != nil{
+		fmt.Printf("Error checking if dest Resource exists")
+		return shim.Error(err.Error())
+	}else if ret == false{
+		fmt.Println("Error Resource %s does not exists for MSP %s, create res before", toResEid,dstMSP)
+		return shim.Error("Error Resource does not exists: " + toResEid)
 	}
 
 	// Delete the key from the state in ledger
@@ -534,17 +542,15 @@ func (t *SimpleChaincode) queryPolicy(stub shim.ChaincodeStubInterface, args []s
 	var jsonResp string
 	var err error
 
-	if len(args) != 4 {
-		return shim.Error("Incorrect number of arguments. Expecting dst MSP, toRes, srcMSP and fromDep")
+	if len(args) != 2 {
+		return shim.Error("Incorrect number of arguments. Expecting toResEid, fromUserEid")
 	}
 
-	toResEid := args[1]
-	dstMSP := args[0]
-	fromUserEid := args[3]
-	srcMSP := args[2]
+	toResEid := args[0]
+	fromUserEid := args[1]
 
-	indexName := "dstmsp~dstres~srcmsp~srcuser"
-	destResSrcUsrIndexKey, err := stub.CreateCompositeKey(indexName, []string{dstMSP,toResEid,srcMSP,fromUserEid})
+	indexName := "dstres~srcuser"
+	destResSrcUsrIndexKey, err := stub.CreateCompositeKey(indexName, []string{toResEid,fromUserEid})
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -1022,15 +1028,45 @@ func checkUserExists(stub shim.ChaincodeStubInterface, msp string, eid string) (
 	} else if valAsbytes == nil {
 		//err = "User with this EID does not exist" + eid
 		return false, nil
+	} else {
+		return true, nil
 	}
 
-	err = json.Unmarshal([]byte(valAsbytes), &userJSON)
+	/*err = json.Unmarshal([]byte(valAsbytes), &userJSON)
 	if err != nil {
 		return false, err
 	}
 
 	if userJSON.MSP != msp {
 		fmt.Printf("User MSP = %s is different from invoker MSP = %s", userJSON.MSP, msp)
+		//err = "User MSP is different from invoker MSP "
+		return false, nil
+	}
+	return true, nil*/
+	
+}
+
+func checkResourceExists(stub shim.ChaincodeStubInterface, msp string, eid string) (bool, error){
+	var resJSON Resource
+	
+	fmt.Println("checkResourceExists msp: %s, eid: %s", msp, eid)
+
+	valAsbytes, err := stub.GetState(eid)
+	if err != nil {
+		fmt.Printf("Failed to get state for resource with EID = %s", eid)
+		return false, err
+	} else if valAsbytes == nil {
+		//err = "User with this EID does not exist" + eid
+		return false, nil
+	}
+
+	err = json.Unmarshal([]byte(valAsbytes), &resJSON)
+	if err != nil {
+		return false, err
+	}
+
+	if resJSON.MSP != msp {
+		fmt.Printf("User MSP = %s is different from invoker MSP = %s", resJSON.MSP, msp)
 		//err = "User MSP is different from invoker MSP "
 		return false, nil
 	}

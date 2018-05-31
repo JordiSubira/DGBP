@@ -35,9 +35,8 @@ process.argv.forEach(function (val, index, array) {
   console.log(index + ': ' + val);
 });
 
-var dstDep = process.argv[2]
-var fromMsp = process.argv[3]
-var fromUser = process.argv[4]
+var toResEid = process.argv[2]
+var fromUser = process.argv[3]
 
 // create the key value store as defined in the fabric-client/config/default.json 'key-value-store' setting
 Fabric_Client.newDefaultKeyValueStore({ path: store_path
@@ -72,7 +71,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 		//targets: let default to the peer assigned to the client
 		chaincodeId: 'mycc',
 		fcn: 'createPolicy',
-		args: [dstDep,fromMsp,fromUser],
+		args: [toResEid,fromUser],
 		chainId: 'mychannel',
 		txId: tx_id
 	};
