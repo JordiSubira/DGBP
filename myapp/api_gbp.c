@@ -11,7 +11,7 @@ int checkPolicy( char* eid_src, char* eid_dst )
   char cmd[64];
 
   //cmd = sprintf(cmd, "node query.js %s %s",eid_src,eid_dst)
-  sprintf(cmd, "python /home/jordi/Fabric1.1/myapp/server_app/server.py %s %s",eid_src,eid_dst);
+  sprintf(cmd, "python server_app/server.py %s %s",eid_src,eid_dst);
 
   // Open the command for reading.
   fp = popen(cmd, "r");

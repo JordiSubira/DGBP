@@ -1,12 +1,8 @@
-import socket
 import sys
 import subprocess as sp
-from fastecdsa import curve, ecdsa, keys
-from hashlib import sha384
 import string
-import random
 import json
-import time
+#import time
 
 RET_KO_POLICY=255
 RET_KO_USER=254
