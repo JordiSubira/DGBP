@@ -1017,7 +1017,7 @@ func checkDepartmentExists(stub shim.ChaincodeStubInterface, msp string, name st
 }
 
 func checkUserExists(stub shim.ChaincodeStubInterface, eid string) (bool, error){
-	var userJSON User
+	//var userJSON User
 	
 	fmt.Println("checkUserExists msp: %s, eid: %s", eid)
 

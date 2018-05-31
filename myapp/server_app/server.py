@@ -8,7 +8,7 @@ RET_KO_POLICY=255
 RET_KO_USER=254
 RET_OK_POLICY=0
 
-toOrg = 'Org1MSP'
+#toOrg = 'Org1MSP'
 
 def queryUserDepChaincodeByEID(eid):
 	#llamar a queryUser.js con certificado
@@ -29,8 +29,8 @@ def queryUserDepChaincodeByEID(eid):
 		print "Error decoding JSON from HyperLedger"
 		return None, None
 
-def queryPolicyChaincode(from_dep,from_msp,to_eid,to_msp):
-	proc = sp.Popen( ['node', 'queryPolicy.js' , to_msp, to_eid, from_msp, from_dep], stdout=sp.PIPE, stderr=sp.PIPE)
+def queryPolicyChaincode(to_eid,from_eid):
+	proc = sp.Popen( ['node', 'queryPolicy.js' , to_eid, from_eid], stdout=sp.PIPE, stderr=sp.PIPE)
 	output, error = proc.communicate()
 	print "Output: ",output
 	print "Error: ", error
@@ -39,17 +39,17 @@ def queryPolicyChaincode(from_dep,from_msp,to_eid,to_msp):
 if __name__ == "__main__":
 
 	#check len(argv)
-	eid_a = sys.argv[1]
-	eid_b = sys.argv[2]
+	eid_dst = sys.argv[1]
+	eid_src = sys.argv[2]
  
 	#queryUser to Chaincode
-	dep, msp = queryUserDepChaincodeByEID(str(eid_a))
+	'''dep, msp = queryUserDepChaincodeByEID(str(eid_src))
 	if dep == None:
-		print "User EID not found = ",eid_a 
-		sys.exit(RET_KO_USER)
+		print "User EID not found = ",eid_src
+		sys.exit(RET_KO_USER)'''
 
 	#query if policy exists between departments
-	if queryPolicyChaincode(dep,msp,eid_b,toOrg) == False:
+	if queryPolicyChaincode(eid_dst,eid_src) == False:
 		print "Policy doesn't exist"
 		sys.exit(RET_KO_POLICY)
 

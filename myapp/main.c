@@ -3,7 +3,7 @@
 
 int main(int argc, char* argv[]) {
 
-int r = checkPolicy("0.0.0.0", "0.0.0.1");
+int r = checkPolicy("0.0.0.1", "0.0.0.0");
 
 
 //printf("The return code is %d \n", r);
