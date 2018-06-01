@@ -70,12 +70,16 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	if (query_responses && query_responses.length == 1) {
 		if (query_responses[0] instanceof Error) {
 			console.error("error from query = ", query_responses[0]);
+			process.exit(255)
 		} else {
 			console.log("Response is ", query_responses[0].toString());
+			process.exit(0)
 		}
 	} else {
 		console.log("No payloads were returned from query");
+		process.exit(255)
 	}
 }).catch((err) => {
 	console.error('Failed to query successfully :: ' + err);
+	process.exit(255)
 });
