@@ -31,6 +31,8 @@ var store_path = path.join(__dirname, 'hfc-key-store');
 console.log('Store path:'+store_path);
 var tx_id = null;
 
+var userPKI = process.argv[2]
+
 // create the key value store as defined in the fabric-client/config/default.json 'key-value-store' setting
 Fabric_Client.newDefaultKeyValueStore({ path: store_path
 }).then((state_store) => {
@@ -64,7 +66,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 		//targets: let default to the peer assigned to the client
 		chaincodeId: 'mycc',
 		fcn: 'deleteUser',
-		args: ['PKIUser2Org1'],
+		args: [userPKI],
 		chainId: 'mychannel',
 		txId: tx_id
 	};
