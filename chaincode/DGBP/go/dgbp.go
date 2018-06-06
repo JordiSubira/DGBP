@@ -133,7 +133,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 
 	User1Org1 := &User{		ObjectType:objectType,
 							PKI: "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE7LVwkDctZRz/pQwed7ZH/TDod852\nBdeKu0SAOQnLfmGfbYIzbIyfhy83sjpFcqeUoLCQyJaPe07hWqk7Fqf5Lg==\n-----END PUBLIC KEY-----",
-							EID:"0.0.0.0",
+							EID:"192.0.2.1",
 							MSP:"Org1MSP",
 							Dep: Dep{
 								ObjectType: "dep",
@@ -146,7 +146,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 		return shim.Error(err.Error())
 	}
 
-	User1Org2 := &User{objectType,"-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEMRqb3/wG9jir88KUfg4OlHigwN/b\nc+4BeMVaiFIknn6af6Vd5X+oVA2qViDGVG3O30RkcR2DnLrJm0bWWwoUDA==\n-----END PUBLIC KEY-----","0.0.0.1","Org2MSP",Dep1Org2}
+	User1Org2 := &User{objectType,"-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEMRqb3/wG9jir88KUfg4OlHigwN/b\nc+4BeMVaiFIknn6af6Vd5X+oVA2qViDGVG3O30RkcR2DnLrJm0bWWwoUDA==\n-----END PUBLIC KEY-----","192.0.2.2","Org2MSP",Dep1Org2}
 	User1Org2JSONasBytes, err := json.Marshal(User1Org2)
 	if err != nil {
 		return shim.Error(err.Error())
