@@ -127,11 +127,29 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 		return shim.Error(err.Error())
 	}
 
-	//	Users
+	objectType = "resource"
+
+	//Resource
+	Res1Org1 := &Resource{	ObjectType:objectType,
+							EID:"192.0.2.1/32",
+							MSP:"Org1MSP",
+						}
+
+	Res1Org1JSONasBytes, err := json.Marshal(Res1Org1)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	err = stub.PutState(Res1Org1.EID, Res1Org1JSONasBytes)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	//	User
 
 	objectType = "user"
 
-	User1Org1 := &User{		ObjectType:objectType,
+	/*User1Org1 := &User{		ObjectType:objectType,
 							PKI: "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE7LVwkDctZRz/pQwed7ZH/TDod852\nBdeKu0SAOQnLfmGfbYIzbIyfhy83sjpFcqeUoLCQyJaPe07hWqk7Fqf5Lg==\n-----END PUBLIC KEY-----",
 							EID:"192.0.2.1",
 							MSP:"Org1MSP",
@@ -146,16 +164,11 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 		return shim.Error(err.Error())
 	}
 
-	User1Org2 := &User{objectType,"-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEMRqb3/wG9jir88KUfg4OlHigwN/b\nc+4BeMVaiFIknn6af6Vd5X+oVA2qViDGVG3O30RkcR2DnLrJm0bWWwoUDA==\n-----END PUBLIC KEY-----","192.0.2.2","Org2MSP",Dep1Org2}
-	User1Org2JSONasBytes, err := json.Marshal(User1Org2)
-	if err != nil {
-		return shim.Error(err.Error())
-	}
-
 	err = stub.PutState(User1Org1.EID, User1Org1JSONasBytes)
 	if err != nil {
 		return shim.Error(err.Error())
-	}
+	}*/
+
 	/*indexName := "msp~pki"
 	mspPkiIndexKey, err := stub.CreateCompositeKey(indexName, []string{User1Org1.MSP, User1Org1.PKI})
 	if err != nil {
@@ -164,6 +177,11 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 	value := []byte{0x00}
 	stub.PutState(mspPkiIndexKey, value)*/
 
+	User1Org2 := &User{objectType,"-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEMRqb3/wG9jir88KUfg4OlHigwN/b\nc+4BeMVaiFIknn6af6Vd5X+oVA2qViDGVG3O30RkcR2DnLrJm0bWWwoUDA==\n-----END PUBLIC KEY-----","192.0.2.2","Org2MSP",Dep1Org2}
+	User1Org2JSONasBytes, err := json.Marshal(User1Org2)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
 
 	err = stub.PutState(User1Org2.EID, User1Org2JSONasBytes)
 	if err != nil {
@@ -176,7 +194,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 	stub.PutState(mspPkiIndexKey2, value)
 	}*/
 
-	fmt.Printf("User1Org1 EID= %s, User1Org2 EID= %s\n", User1Org1.EID, User1Org2.EID)
+	fmt.Printf("Res1Org1 EID= %s, User1Org2 EID= %s\n", Res1Org1.EID, User1Org2.EID)
 
 
 	return shim.Success(nil)
@@ -853,9 +871,29 @@ func (t *SimpleChaincode) createResource(stub shim.ChaincodeStubInterface, args 
 
 	eid = args[0]
 	
-	//...TO BE CONTINUED: include only composite key
+	//include just eid key
 
-	indexName := "msp~eid"
+	AsBytes, err := stub.GetState(eid)
+	if err != nil {
+		return shim.Error("Failed to get resource: " + err.Error())
+	} else if userAsBytes != nil {
+		fmt.Println("Resource with EID = %s already exists: ", eid)
+		return shim.Error("Resource with PKI already exists: " + eid)
+	}
+
+	res := &Resource{objectType,msp,eid}
+	resAsBytes, err := json.Marshal(res)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	err = stub.PutState(res.EID, resAsBytes)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	//include composite key
+	/*indexName := "msp~eid"
 	eidMSPIndexKey, err := stub.CreateCompositeKey(indexName, []string{msp, eid})
 	if err != nil {
 		return shim.Error(err.Error())
@@ -879,7 +917,7 @@ func (t *SimpleChaincode) createResource(stub shim.ChaincodeStubInterface, args 
 	err = stub.PutState(eidMSPIndexKey, resAsBytes)
 	if err != nil {
 		return shim.Error(err.Error())
-	}
+	}*/
 
 	fmt.Printf("Success creating Resource = %s; to MSP = %s\n", eid, msp)
 
@@ -901,7 +939,24 @@ func (t *SimpleChaincode) deleteResource(stub shim.ChaincodeStubInterface, args 
 
 	eid := args[0]
 
-	indexName := "msp~eid"
+	//Simple key
+
+	ret, err := checkResourceExists(stub,msp,eid)
+	if err != nil{
+		fmt.Printf("Error checking if dest Resource exists")
+		return shim.Error(err.Error())
+	}else if ret == false{
+		fmt.Println("Error Resource %s does not exists for MSP %s, create res before", eid,msp)
+		return shim.Error("Error Resource does not exists or MSP doesn't match: " + eid)
+	}
+
+	err = stub.DelState(eid)
+	if err != nil {
+		return shim.Error("Failed to delete state")
+	}
+
+	//Composite jkey
+	/*indexName := "msp~eid"
 	eidMSPIndexKey, err := stub.CreateCompositeKey(indexName, []string{msp, eid})
 	if err != nil {
 		return shim.Error(err.Error())
@@ -911,7 +966,7 @@ func (t *SimpleChaincode) deleteResource(stub shim.ChaincodeStubInterface, args 
 	err = stub.DelState(eidMSPIndexKey)
 	if err != nil {
 		return shim.Error("Failed to delete state")
-	}
+	}*/
 
 	return shim.Success(nil)
 }
@@ -920,14 +975,33 @@ func (t *SimpleChaincode) queryResource(stub shim.ChaincodeStubInterface, args [
 	var jsonResp string
 	var err error
 
-	if len(args) != 2 {
+	/*if len(args) != 2 {
 		return shim.Error("Incorrect number of arguments. Expecting MSP and eid")
 	}
 
 	msp := args[0]
-	eid := args[1]
+	eid := args[1]*/
 
-	indexName := "msp~eid"
+	if len(args) != 1 {
+		return shim.Error("Incorrect number of arguments. Expecting eid")
+	}
+
+	eid := args[0]
+
+	valAsbytes, err := stub.GetState(eid)
+	if err != nil {
+		jsonResp = "{\"Error\":\"Failed to get state for Resource with EID = " + eid + "\"}"
+		return shim.Error(jsonResp)
+	}else if valAsbytes == nil {
+		jsonResp = "{\"Error\":\"Resource does not exist: " + eid + "\"}"
+		return shim.Error(jsonResp)
+	}
+
+	jsonResp = "{\"Resource\":\"" + string(valAsbytes) + "\"}"
+	fmt.Printf("Query Response:%s\n", jsonResp)
+	return shim.Success(valAsbytes)
+
+	/*indexName := "msp~eid"
 	eidMSPIndexKey, err := stub.CreateCompositeKey(indexName, []string{msp, eid})
 	if err != nil {
 		return shim.Error(err.Error())
@@ -945,7 +1019,7 @@ func (t *SimpleChaincode) queryResource(stub shim.ChaincodeStubInterface, args [
 
 	jsonResp = "{\"Resource\":\"" + string(valAsbytes) + "\"}"
 	fmt.Printf("Query Response:%s\n", jsonResp)
-	return shim.Success(valAsbytes)
+	return shim.Success(valAsbytes)*/
 }
 
 // =========================================================================================
