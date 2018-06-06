@@ -876,7 +876,7 @@ func (t *SimpleChaincode) createResource(stub shim.ChaincodeStubInterface, args 
 	AsBytes, err := stub.GetState(eid)
 	if err != nil {
 		return shim.Error("Failed to get resource: " + err.Error())
-	} else if userAsBytes != nil {
+	} else if AsBytes != nil {
 		fmt.Println("Resource with EID = %s already exists: ", eid)
 		return shim.Error("Resource with PKI already exists: " + eid)
 	}
