@@ -1,0 +1,281 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+volumes:
+  orderer.example.com:
+  peer0.org1.example.com:
+  peer1.org1.example.com:
+  peer0.org2.example.com:
+  peer1.org2.example.com:
+  peer0.org3.example.com:
+  peer1.org3.example.com:
+  peer0.org4.example.com:
+  peer1.org4.example.com:
+  peer0.org5.example.com:
+  peer1.org5.example.com:
+  peer0.org6.example.com:
+  peer1.org6.example.com:
+  peer0.org7.example.com:
+  peer1.org7.example.com:
+  peer0.org8.example.com:
+  peer1.org8.example.com:
+  peer0.org9.example.com:
+  peer1.org9.example.com:
+  peer0.org10.example.com:
+  peer1.org10.example.com:
+
+networks:
+  byfn:
+services:
+  ca0:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-org1
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/5bb2cfc5f07001d409040a77201e8f0c729e36c8b1c4133b84d8442e8bb6e0f6_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peerOrg1
+    networks:
+      - byfn
+
+  ca1:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-org2
+    ports:
+      - "8054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.org2.example.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/72f654d2ebf44abf398bff2c068001e5f61b4cede5c10a5fe738e54933eba9d3_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/org2.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peerOrg2
+    networks:
+      - byfn
+
+  ca2:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-org3
+    ports:
+      - "9054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.org3.example.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/5d6dbd5cb66e6fe7ab5e5500cb24be2e818cb51b101f09ba6d2ad7efa0651fb6_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/org3.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peerOrg3
+    networks:
+      - byfn
+
+  orderer.example.com:
+    extends:
+      file:   base/docker-compose-base.yaml
+      service: orderer.example.com
+    container_name: orderer.example.com
+    networks:
+      - byfn
+
+  peer0.org1.example.com:
+    container_name: peer0.org1.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.org1.example.com
+    networks:
+      - byfn
+
+  peer1.org1.example.com:
+    container_name: peer1.org1.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.org1.example.com
+    networks:
+      - byfn
+
+  peer0.org2.example.com:
+    container_name: peer0.org2.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.org2.example.com
+    networks:
+      - byfn
+
+  peer1.org2.example.com:
+    container_name: peer1.org2.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.org2.example.com
+    networks:
+      - byfn
+
+  peer0.org3.example.com:
+    container_name: peer0.org3.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.org3.example.com
+    networks:
+      - byfn
+
+  peer1.org3.example.com:
+    container_name: peer1.org3.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.org3.example.com
+    networks:
+      - byfn
+  peer0.org4.example.com:
+    container_name: peer0.org4.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.org4.example.com
+    networks:
+      - byfn
+
+  peer1.org4.example.com:
+    container_name: peer1.org4.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.org4.example.com
+    networks:
+      - byfn
+  peer0.org5.example.com:
+    container_name: peer0.org5.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.org5.example.com
+    networks:
+      - byfn
+
+  peer1.org5.example.com:
+    container_name: peer1.org5.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.org5.example.com
+    networks:
+      - byfn
+  peer0.org6.example.com:
+    container_name: peer0.org6.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.org6.example.com
+    networks:
+      - byfn
+
+  peer1.org6.example.com:
+    container_name: peer1.org6.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.org6.example.com
+    networks:
+      - byfn
+  peer0.org7.example.com:
+    container_name: peer0.org7.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.org7.example.com
+    networks:
+      - byfn
+
+  peer1.org7.example.com:
+    container_name: peer1.org7.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.org7.example.com
+    networks:
+      - byfn
+  peer0.org8.example.com:
+    container_name: peer0.org8.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.org8.example.com
+    networks:
+      - byfn
+
+  peer1.org8.example.com:
+    container_name: peer1.org8.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.org8.example.com
+    networks:
+      - byfn
+  peer0.org9.example.com:
+    container_name: peer0.org9.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.org9.example.com
+    networks:
+      - byfn
+
+  peer1.org9.example.com:
+    container_name: peer1.org9.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.org9.example.com
+    networks:
+      - byfn
+  peer0.org10.example.com:
+    container_name: peer0.org10.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.org10.example.com
+    networks:
+      - byfn
+
+  peer1.org10.example.com:
+    container_name: peer1.org10.example.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.org10.example.com
+    networks:
+      - byfn
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:$IMAGE_TAG
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      #- CORE_LOGGING_LEVEL=DEBUG
+      - CORE_LOGGING_LEVEL=INFO
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./../chaincode/:/opt/gopath/src/github.com/chaincode
+        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+        - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    depends_on:
+      - orderer.example.com
+      - peer0.org1.example.com
+      - peer1.org1.example.com
+      - peer0.org2.example.com
+      - peer1.org2.example.com
+      - peer0.org3.example.com
+      - peer1.org3.example.com
+      - peer0.org4.example.com
+      - peer1.org4.example.com
+      - peer0.org5.example.com
+      - peer1.org5.example.com
+      - peer0.org6.example.com
+      - peer1.org6.example.com
+      - peer0.org7.example.com
+      - peer1.org7.example.com
+      - peer0.org8.example.com
+      - peer1.org8.example.com
+      - peer0.org9.example.com
+      - peer1.org9.example.com
+      - peer0.org10.example.com
+      - peer1.org10.example.com
+    networks:
+      - byfn
