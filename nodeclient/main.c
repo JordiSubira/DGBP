@@ -5,7 +5,7 @@ int main(int argc, char* argv[]) {
 
 char eid[32];
 
-for (int i=0; i<500;i++){
+for (int i=500; i<10000;i++){
 
  	sprintf(eid, "0.0.%d",i);
 
