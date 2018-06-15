@@ -3,11 +3,19 @@
 
 int main(int argc, char* argv[]) {
 
-int r = checkPolicy("192.0.2.1", "192.0.2.2");
+char eid[32];
+
+for (int i=0; i<500;i++){
+
+ 	sprintf(eid, "0.0.%d",i);
+
+	int r = createUser("PKI",eid,"Dep1");
+
+	//printf("The return code is %d \n", r);
+	printf("The return code is %d \n", r);
+}
 
 
-//printf("The return code is %d \n", r);
-printf("The return code is %d \n", r);
 
 return 0;
 }
