@@ -21,9 +21,9 @@ var channel = fabric_client.newChannel('mychannel');
 
 var peer = fabric_client.newPeer('grpc://localhost:7051');
 channel.addPeer(peer);
-/*var peer2 = fabric_client.newPeer('grpc://localhost:9051');
+var peer2 = fabric_client.newPeer('grpc://localhost:8051');
 channel.addPeer(peer2);
-var peer3 = fabric_client.newPeer('grpc://localhost:11051');
+/*var peer3 = fabric_client.newPeer('grpc://localhost:11051');
 channel.addPeer(peer3);
 var peer4 = fabric_client.newPeer('grpc://localhost:13051');
 channel.addPeer(peer4);

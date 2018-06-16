@@ -21,11 +21,11 @@ var channel = fabric_client.newChannel('mychannel');
 
 var peer = fabric_client.newPeer('grpc://localhost:7051');
 channel.addPeer(peer);
-/*var peer2 = fabric_client.newPeer('grpc://localhost:9051');
+var peer2 = fabric_client.newPeer('grpc://localhost:8051');
 channel.addPeer(peer2);
-var peer3 = fabric_client.newPeer('grpc://localhost:11051');
+var peer3 = fabric_client.newPeer('grpc://localhost:9051');
 channel.addPeer(peer3);
-var peer4 = fabric_client.newPeer('grpc://localhost:13051');
+var peer4 = fabric_client.newPeer('grpc://localhost:10051');
 channel.addPeer(peer4);
 var peer5 = fabric_client.newPeer('grpc://localhost:11051');
 channel.addPeer(peer5);
@@ -47,28 +47,6 @@ var peer13 = fabric_client.newPeer('grpc://localhost:19051');
 channel.addPeer(peer13);
 var peer14 = fabric_client.newPeer('grpc://localhost:20051');
 channel.addPeer(peer14);
-var peer15 = fabric_client.newPeer('grpc://localhost:21051');
-channel.addPeer(peer15);
-var peer16 = fabric_client.newPeer('grpc://localhost:22051');
-channel.addPeer(peer16);
-var peer17 = fabric_client.newPeer('grpc://localhost:23051');
-channel.addPeer(peer17);
-var peer18 = fabric_client.newPeer('grpc://localhost:24051');
-channel.addPeer(peer18);
-var peer19 = fabric_client.newPeer('grpc://localhost:25051');
-channel.addPeer(peer19);
-var peer20	 = fabric_client.newPeer('grpc://localhost:26051');
-channel.addPeer(peer20);
-var peer21	 = fabric_client.newPeer('grpc://localhost:27051');
-channel.addPeer(peer21);
-var peer22	 = fabric_client.newPeer('grpc://localhost:28051');
-channel.addPeer(peer22);
-var peer23	 = fabric_client.newPeer('grpc://localhost:29051');
-channel.addPeer(peer23);
-var peer24	 = fabric_client.newPeer('grpc://localhost:30051');
-channel.addPeer(peer24);
-var peer25	 = fabric_client.newPeer('grpc://localhost:31051');
-channel.addPeer(peer25);*/
 
 
 var order = fabric_client.newOrderer('grpc://localhost:7050')
