@@ -211,25 +211,25 @@ func main() {
 			cmd.Args = []string{"node",queryDptNodeFileName,*qDptMspPtr, *dptNamePtr}
 
 		case "createPolicy":
-			if *dstResEid== "" || *fromUserEid ""{
+			if *dstResEidPtr== "" || *fromUserEid == ""{
 				fmt.Println("Usage: with " + action + " bad needed args")
 				return
 			}
-			cmd.Args = []string{"node",createPolicyFileName,*dstDptNamePtr,*fromMspNamePtr,*fromDptnamePtr}
+			cmd.Args = []string{"node",createPolicyFileName,*dstResEidPtr,*fromUserEid}
 
 		case "deletePolicy":
-			if *dstResEid== "" || *fromUserEid ""{
+			if *dstResEidPtr == "" || *fromUserEid == ""{
 				fmt.Println("Usage: with " + action + " bad needed args")
 				return
 			}
-			cmd.Args = []string{"node",deletePolicyFileName,*dstDptNamePtr,*fromMspNamePtr,*fromDptnamePtr}
+			cmd.Args = []string{"node",deletePolicyFileName,*dstResEidPtr,*fromUserEid}
 
 		case "queryPolicy":
-			if *dstResEid== "" || *fromUserEid ""{
+			if *dstResEidPtr == "" || *fromUserEid == ""{
 				fmt.Println("Usage: with " + action + " bad needed args")
 				return
 			}
-			cmd.Args = []string{"node",queryPolicyFileName, *qDstMspPtr,*dstDptNamePtr,*fromMspNamePtr,*fromDptnamePtr}
+			cmd.Args = []string{"node",queryPolicyFileName, *dstResEidPtr,*fromUserEid}
 
 		case "createResource":
 			if *resNamePtr== ""{
@@ -258,6 +258,10 @@ func main() {
 			return
 
 	}
+
+	_ = fromDptnamePtr
+	_ = fromMspNamePtr
+	_ = qDstMspPtr
 
 	/*for i:=0 ; i<len(args);i++{
 		cmd.Args = append(cmd.Args,args[i])
