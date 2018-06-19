@@ -11,7 +11,7 @@ int checkPolicy( char* eid_dst, char* eid_src )
   char cmd[64];
 
   //cmd = sprintf(cmd, "node query.js %s %s",eid_src,eid_dst)
-  sprintf(cmd, "python server_app/server.py %s %s",eid_dst,eid_src);
+  sprintf(cmd, "node /home/jsubira/DGBP/nodeclient/queryPolicy.js %s %s",eid_dst,eid_src);
 
   // Open the command for reading.
   fp = popen(cmd, "r");
