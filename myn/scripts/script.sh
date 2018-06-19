@@ -53,7 +53,7 @@ createChannel() {
 }
 
 joinChannel () {
-	for org in 1 2; do
+	for org in 1 2 3 4; do
 	    for peer in 0 1; do
 		joinChannelWithRetry $peer $org
 		echo "===================== peer${peer}.org${org} joined on the channel \"$CHANNEL_NAME\" ===================== "
@@ -76,20 +76,31 @@ echo "Updating anchor peers for org1..."
 updateAnchorPeers 0 1
 echo "Updating anchor peers for org2..."
 updateAnchorPeers 0 2
+echo "Updating anchor peers for org3..."
+updateAnchorPeers 0 3
+echo "Updating anchor peers for org4..."
+updateAnchorPeers 0 4
 
 ## Install chaincode on peer0.org1 and peer0.org2
 echo "Installing chaincode on peer0.org1..."
 installChaincode 0 1
 echo "Install chaincode on peer0.org2..."
 installChaincode 0 2
+echo "Install chaincode on peer0.org3..."
+installChaincode 0 3
+echo "Install chaincode on peer0.org4..."
+installChaincode 0 4
 
 # Instantiate chaincode on peer0.org2
 echo "Instantiating chaincode on peer0.org2..."
-instantiateChaincode
+instantiateChaincode 0 2
 
 # Query chaincode on peer0.org1
 echo "Querying chaincode on peer0.org1..."
-chaincodeQuery
+chaincodeQuery 0 1
+chaincodeQuery 0 2
+chaincodeQuery 0 3
+chaincodeQuery 0 4
 
 # Invoke chaincode on peer0.org1
 echo "Sending invoke transaction on peer0.org1..."

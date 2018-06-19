@@ -55,6 +55,15 @@ setGlobals () {
 		else
 			CORE_PEER_ADDRESS=peer1.org3.example.com:7051
 		fi
+	elif [ $ORG -eq 4 ] ; then
+		CORE_PEER_LOCALMSPID="Org4MSP"
+		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org4.example.com/peers/peer0.org3.example.com/tls/ca.crt
+		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org4.example.com/users/Admin@org4.example.com/msp
+		if [ $PEER -eq 0 ]; then
+			CORE_PEER_ADDRESS=peer0.org4.example.com:7051
+		else
+			CORE_PEER_ADDRESS=peer1.org4.example.com:7051
+		fi
 	else
 		echo "================== ERROR !!! ORG Unknown =================="
 	fi
@@ -124,14 +133,16 @@ installChaincode () {
 }
 
 instantiateChaincode () {
+	PEER=$1
+	ORG=$2
 	setGlobals $PEER $ORG
 	VERSION=${3:-1.0}
 
-	# while 'peer chaincode' command can get the orderer endpoint from the peer (if join was successful),
+	# while 'peer chaincode' command can get the orderer endpoint from the peer (if join was successful), OR	( AND('Org1MSP.peer','Org2MSP.peer', 'Org3MSP.peer'),AND('Org1MSP.peer','Org2MSP.peer', 'Org4MSP.peer'),AND('Org4MSP.peer','Org2MSP.peer', 'Org3MSP.peer'),AND('Org1MSP.peer','Org4MSP.peer', 'Org3MSP.peer'))
 	# lets supply it directly as we know it using the "-o" option
 	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
                 set -x
-		peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init"]}' -P "OR	('Org1MSP.peer','Org2MSP.peer')" >&log.txt
+		peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init"]}' -P "AND('Org1MSP.peer','Org2MSP.peer', 'Org3MSP.peer','Org4MSP.peer')" >&log.txt
 		res=$?
                 set +x
 	else
@@ -162,6 +173,8 @@ upgradeChaincode () {
 }
 
 chaincodeQuery () {
+	PEER=$1
+    ORG=$2
   setGlobals $PEER $ORG
   EXPECTED_RESULT=$3
   echo "===================== Querying on peer${PEER}.org${ORG} on channel '$CHANNEL_NAME'... ===================== "
