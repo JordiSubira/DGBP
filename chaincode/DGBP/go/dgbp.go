@@ -1,19 +1,3 @@
-/*
-Copyright IBM Corp. 2016 All Rights Reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-		 http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 package main
 
 import (
@@ -70,28 +54,12 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 
 	fmt.Println("abac Init")
 
-	//
-	// Demonstrate the use of Attribute-Based Access Control (ABAC) by checking
-	// to see if the caller has the "abac.init" attribute with a value of true;
-	// if not, return an error.
-	//
-
 	MSPid , err := cid.GetMSPID(stub)
 	if err != nil {
 		return shim.Error("In CREATEUSER: Error: Failed to get MSPID")
 	}
 	fmt.Printf("MSPID= %s", MSPid)
 
-	/*_, args := stub.GetFunctionAndParameters()
-	var AdminOrg1, AdminOrg2 string    // Entities
-	var AO1PubK, AO2PubKey int // Asset holdings
-
-	if len(args) != 4 {
-		return shim.Error("Incorrect number of arguments. Expecting 4")
-	}*/
-
-	//	Initialize the chaincode
-	// 	Deps
 	objectType := "dep"
 
 	Dep1Org1 := Dep{objectType, "Org1MSP","Dep1"}
@@ -264,9 +232,8 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	return shim.Error("Invalid invoke function name. Expecting \"invoke\" \"delete\" \"query\"")
 }
 
-// Transaction makes payment of X units from A to B
 func (t *SimpleChaincode) createUser(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	var eid,pki,msp,name_dep string    // Entities
+	var eid,pki,msp,name_dep string    
 	var err error
 
 	//Check department exists
@@ -1022,10 +989,6 @@ func (t *SimpleChaincode) queryResource(stub shim.ChaincodeStubInterface, args [
 	return shim.Success(valAsbytes)*/
 }
 
-// =========================================================================================
-// getQueryResultForQueryString executes the passed in query string.
-// Result set is built and returned as a byte array containing the JSON results.
-// =========================================================================================
 func getQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString string) ([]byte, error) {
 
 	fmt.Printf("- getQueryResultForQueryString queryString:\n%s\n", queryString)
@@ -1036,7 +999,6 @@ func getQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString 
 	}
 	defer resultsIterator.Close()
 
-	// buffer is a JSON array containing QueryRecords
 	var buffer bytes.Buffer
 	buffer.WriteString("[")
 
@@ -1046,7 +1008,6 @@ func getQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString 
 		if err != nil {
 			return nil, err
 		}
-		// Add a comma before array members, suppress it for the first array member
 		if bArrayMemberAlreadyWritten == true {
 			buffer.WriteString(",")
 		}
@@ -1056,7 +1017,6 @@ func getQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString 
 		buffer.WriteString("\"")
 
 		buffer.WriteString(", \"Record\":")
-		// Record is a JSON object, so we write as-is
 		buffer.WriteString(string(queryResponse.Value))
 		buffer.WriteString("}")
 		bArrayMemberAlreadyWritten = true

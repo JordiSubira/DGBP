@@ -188,7 +188,7 @@ chaincodeQuery () {
      sleep $DELAY
      echo "Attempting to Query peer${PEER}.org${ORG} ...$(($(date +%s)-starttime)) secs"
      set -x
-     peer chaincode query -C $CHANNEL_NAME -n mycc -c '{"Args":["queryUserByPKI","PKIUser1Org1"]}' >&log.txt
+     peer chaincode query -C $CHANNEL_NAME -n mycc -c '{"Args":["queryUserByEID","192.0.2.2"]}' >&log.txt
 	 res=$?
      set +x
      VALUE=$(cat log.txt | awk '/Query Result/ {print $NF}')

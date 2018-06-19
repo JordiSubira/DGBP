@@ -5,29 +5,6 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-# This script will orchestrate a sample end-to-end execution of the Hyperledger
-# Fabric network.
-#
-# The end-to-end verification provisions a sample Fabric network consisting of
-# two organizations, each maintaining two peers, and a “solo” ordering service.
-#
-# This verification makes use of two fundamental tools, which are necessary to
-# create a functioning transactional network with digital signature validation
-# and access control:
-#
-# * cryptogen - generates the x509 certificates used to identify and
-#   authenticate the various components in the network.
-# * configtxgen - generates the requisite configuration artifacts for orderer
-#   bootstrap and channel creation.
-#
-# Each tool consumes a configuration yaml file, within which we specify the topology
-# of our network (cryptogen) and the location of our certificates for various
-# configuration operations (configtxgen).  Once the tools have been successfully run,
-# we are able to launch our network.  More detail on the tools and the structure of
-# the network will be provided later in this document.  For now, let's get going...
-
-# prepending $PWD/../bin to PATH to ensure we are picking up the correct binaries
-# this may be commented out to resolve installed version of tools if desired
 export PATH=${PWD}/../bin:${PWD}:$PATH
 export FABRIC_CFG_PATH=${PWD}
 export COMPOSE_PROJECT_NAME=net
