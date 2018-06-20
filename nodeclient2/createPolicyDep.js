@@ -5,15 +5,21 @@
 * SPDX-License-Identifier: Apache-2.0
 */
 
+/*
+* Code modified from https://github.com/hyperledger/fabric-samples
+* by Jordi Subirà
+*/
+
 var Fabric_Client = require('fabric-client');
 var path = require('path');
 var util = require('util');
 var os = require('os');
 
-//
 var fabric_client = new Fabric_Client();
 
 var channel = fabric_client.newChannel('mychannel');
+
+//Modified to connect to all endorsers
 var peer = fabric_client.newPeer('grpc://localhost:7051');
 channel.addPeer(peer);
 var peer2 = fabric_client.newPeer('grpc://localhost:9051');
@@ -22,19 +28,21 @@ var peer3 = fabric_client.newPeer('grpc://localhost:11051');
 channel.addPeer(peer3);
 var peer4 = fabric_client.newPeer('grpc://localhost:13051');
 channel.addPeer(peer4);
+
+
 var order = fabric_client.newOrderer('grpc://localhost:7050')
 channel.addOrderer(order);
 
-//
 var member_user = null;
 var store_path = path.join(__dirname, 'hfc-key-store');
-console.log('Store path:'+store_path);
+//console.log('Store path:'+store_path);
 var tx_id = null;
 
-process.argv.forEach(function (val, index, array) {
+/*process.argv.forEach(function (val, index, array) {
   console.log(index + ': ' + val);
-});
+});*/
 
+//Modified to get sys args
 var dstDep = process.argv[2]
 var fromMsp = process.argv[3]
 var fromDep = process.argv[4]
@@ -46,6 +54,8 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	var crypto_store = Fabric_Client.newCryptoKeyStore({path: store_path});
 	crypto_suite.setCryptoKeyStore(crypto_store);
 	fabric_client.setCryptoSuite(crypto_suite);
+
+	//Modified just work with admin
 	return fabric_client.getUserContext('admin', true);
 }).then((user_from_store) => {
 	if (user_from_store && user_from_store.isEnrolled()) {
@@ -57,6 +67,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	tx_id = fabric_client.newTransactionID();
 	console.log("Assigning transaction_id: ", tx_id._transaction_id);
 
+	//Creating transaction for DGBP
 	var request = {
 		chaincodeId: 'mycc',
 		fcn: 'createPolicyDep',
@@ -95,11 +106,12 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 		let event_hub = fabric_client.newEventHub();
 		event_hub.setPeerAddr('grpc://localhost:9053');
 
+		//Changed timer
 		let txPromise = new Promise((resolve, reject) => {
 			let handle = setTimeout(() => {
 				event_hub.disconnect();
 				resolve({event_status : 'TIMEOUT'}); 
-			}, 3000);
+			}, 30000);
 			event_hub.connect();
 			event_hub.registerTxEvent(transaction_id_string, (tx, code) => {
 				clearTimeout(handle);
