@@ -22,6 +22,10 @@ var peer = fabric_client.newPeer('grpc://localhost:7051');
 channel.addPeer(peer);
 var peer2 = fabric_client.newPeer('grpc://localhost:9051');
 channel.addPeer(peer2);
+var peer3 = fabric_client.newPeer('grpc://localhost:11051');
+channel.addPeer(peer3);
+var peer4 = fabric_client.newPeer('grpc://localhost:13051');
+channel.addPeer(peer4);
 var order = fabric_client.newOrderer('grpc://localhost:7050')
 channel.addOrderer(order);
 
@@ -112,7 +116,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 		// get an eventhub once the fabric client has a user assigned. The user
 		// is required bacause the event registration must be signed
 		let event_hub = fabric_client.newEventHub();
-		event_hub.setPeerAddr('grpc://localhost:7053');
+		event_hub.setPeerAddr('grpc://localhost:9053');
 
 		// using resolve the promise so that result status may be processed
 		// under the then clause rather than having the catch clause process

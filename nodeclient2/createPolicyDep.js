@@ -31,8 +31,13 @@ var store_path = path.join(__dirname, 'hfc-key-store');
 console.log('Store path:'+store_path);
 var tx_id = null;
 
-var toResEid = process.argv[2]
-var fromUser = process.argv[3]
+process.argv.forEach(function (val, index, array) {
+  console.log(index + ': ' + val);
+});
+
+var dstDep = process.argv[2]
+var fromMsp = process.argv[3]
+var fromDep = process.argv[4]
 
 Fabric_Client.newDefaultKeyValueStore({ path: store_path
 }).then((state_store) => {
@@ -41,7 +46,6 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	var crypto_store = Fabric_Client.newCryptoKeyStore({path: store_path});
 	crypto_suite.setCryptoKeyStore(crypto_store);
 	fabric_client.setCryptoSuite(crypto_suite);
-
 	return fabric_client.getUserContext('admin', true);
 }).then((user_from_store) => {
 	if (user_from_store && user_from_store.isEnrolled()) {
@@ -50,14 +54,13 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	} else {
 		throw new Error('Failed to get user1.... run registerUser.js');
 	}
-
 	tx_id = fabric_client.newTransactionID();
 	console.log("Assigning transaction_id: ", tx_id._transaction_id);
 
 	var request = {
 		chaincodeId: 'mycc',
-		fcn: 'deletePolicy',
-		args: [toResEid,fromUser],
+		fcn: 'createPolicyDep',
+		args: [dstDep,fromMsp,fromDep],
 		chainId: 'mychannel',
 		txId: tx_id
 	};
@@ -89,11 +92,9 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 		var sendPromise = channel.sendTransaction(request);
 		promises.push(sendPromise); 
 
-		
 		let event_hub = fabric_client.newEventHub();
 		event_hub.setPeerAddr('grpc://localhost:9053');
 
-		
 		let txPromise = new Promise((resolve, reject) => {
 			let handle = setTimeout(() => {
 				event_hub.disconnect();

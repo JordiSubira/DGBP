@@ -27,6 +27,8 @@ var store_path = path.join(__dirname, 'hfc-key-store');
 console.log('Store path:'+store_path);
 var tx_id = null;
 
+var mspName = process.argv[2]
+
 // create the key value store as defined in the fabric-client/config/default.json 'key-value-store' setting
 Fabric_Client.newDefaultKeyValueStore({ path: store_path
 }).then((state_store) => {
@@ -55,7 +57,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 		//targets : --- letting this default to the peers assigned to the channel
 		chaincodeId: 'mycc',
 		fcn: 'queryUserByMSP',
-		args: ['Org2MSP']
+		args: [mspName]
 	};
 
 	// send the query proposal to the peer
