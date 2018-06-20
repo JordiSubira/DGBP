@@ -4,18 +4,21 @@
 *
 * SPDX-License-Identifier: Apache-2.0
 */
+/*
+* Code modified from https://github.com/hyperledger/fabric-samples
+* by Jordi Subirà
+*/
 
 var Fabric_Client = require('fabric-client');
 var path = require('path');
 var util = require('util');
 var os = require('os');
 
-//
 var fabric_client = new Fabric_Client();
 
-// setup the fabric network
 var channel = fabric_client.newChannel('mychannel');
 
+//Modified to connect to all endorsers
 var peer = fabric_client.newPeer('grpc://localhost:7051');
 channel.addPeer(peer);
 var peer2 = fabric_client.newPeer('grpc://localhost:9051');
@@ -29,7 +32,6 @@ channel.addPeer(peer4);
 var order = fabric_client.newOrderer('grpc://localhost:7050')
 channel.addOrderer(order);
 
-//
 var member_user = null;
 var store_path = path.join(__dirname, 'hfc-key-store');
 //console.log('Store path:'+store_path);
@@ -39,6 +41,7 @@ var tx_id = null;
   console.log(index + ': ' + val);
 });*/
 
+//Modified to get sys args
 var userPKI = process.argv[2]
 var userEID = process.argv[3]
 var userDep = process.argv[4]
@@ -51,6 +54,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	crypto_suite.setCryptoKeyStore(crypto_store);
 	fabric_client.setCryptoSuite(crypto_suite);
 
+	//Modified just work with admin
 	return fabric_client.getUserContext('admin', true);
 }).then((user_from_store) => {
 	if (user_from_store && user_from_store.isEnrolled()) {
@@ -59,6 +63,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 		throw new Error('Failed to get user1.... run registerUser.js');
 	}
 
+	//Creating transaction for DGBP
 	tx_id = fabric_client.newTransactionID();
 	var request = {
 		chaincodeId: 'mycc',
@@ -68,6 +73,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 		txId: tx_id
 	};
 
+	//Setting timer
 	console.time('createUser')
 	return channel.sendTransactionProposal(request);
 }).then((results) => {
@@ -95,6 +101,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 		let event_hub = fabric_client.newEventHub();
 		event_hub.setPeerAddr('grpc://localhost:7053');
 		
+		//Changed timer
 		let txPromise = new Promise((resolve, reject) => {
 			let handle = setTimeout(() => {
 				event_hub.disconnect();
@@ -127,6 +134,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 		throw new Error('Failed to send Proposal or receive valid response. Response null or status is not 200. exiting...');
 	}
 }).then((results) => {
+	//Getting time
 	console.timeEnd('createUser')
 	if (results && results[0] && results[0].status === 'SUCCESS') {
 	} else {

@@ -1,4 +1,8 @@
 #!/bin/bash
+#
+# Code modified from https://github.com/hyperledger/fabric-samples
+# by Jordi Subirà
+#
 
 echo
 echo " ____    _____      _      ____    _____ "

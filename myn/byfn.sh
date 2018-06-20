@@ -4,6 +4,10 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
+#
+# Code modified from https://github.com/hyperledger/fabric-samples
+# by Jordi Subirà
+#
 
 export PATH=${PWD}/../bin:${PWD}:$PATH
 export FABRIC_CFG_PATH=${PWD}

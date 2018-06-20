@@ -3,6 +3,10 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
+#
+# Code modified from https://github.com/hyperledger/fabric-samples
+# by Jordi Subirà
+#
 
 # This is a collection of bash functions used by different scripts
 
