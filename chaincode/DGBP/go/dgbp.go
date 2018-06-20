@@ -10,12 +10,11 @@ import (
 	pb "github.com/hyperledger/fabric/protos/peer"
 )
 
-// SimpleChaincode example simple Chaincode implementation
 type SimpleChaincode struct {
 }
 
 type User struct{
-	ObjectType string `json:"docType"` //docType is used to distinguish the various types of objects in state database
+	ObjectType string `json:"docType"` /
 	PKI string `json:"pki"`
 	EID string `json:"eid"`
 	MSP string `json:"msp"`
@@ -23,19 +22,19 @@ type User struct{
 }
 
 type Dep struct{	
-	ObjectType string `json:"docType"` //docType is used to distinguish the various types of objects in state database
+	ObjectType string `json:"docType"` 
 	MSP string `json:"msp"`
 	Name string `json:"name"`
 }
 
 type Resource struct{
-	ObjectType string `json:"docType"` //docType is used to distinguish the various types of objects in state database
+	ObjectType string `json:"docType"`
 	MSP string `json:"msp"`
 	EID string `json:"eid"`
 }
 
 type Policy struct{
-	ObjectType string `json:"docType"` //docType is used to distinguish the various types of objects in state database
+	ObjectType string `json:"docType"`
 	//srcMSP string `json:"srcMSP"`
 	FromUserEid string `json:"fromUser"`
 	//dstMSP string `json:"srcMSP"`
@@ -43,13 +42,13 @@ type Policy struct{
 }
 
 type PolicyDep struct{
-	ObjectType string `json:"docType"` //docType is used to distinguish the various types of objects in state database
+	ObjectType string `json:"docType"` 
 	//srcMSP string `json:"srcMSP"`
 	From Dep `json:"fromDep"`
 	//dstMSP string `json:"srcMSP"`
 	To Resource `json:"toRes"`
 }
-// Init initializes the chaincode
+
 func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 
 	fmt.Println("abac Init")
@@ -172,52 +171,36 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	fmt.Println("abac Invoke")
 	function, args := stub.GetFunctionAndParameters()
 	if function == "createUser" {
-		// Make payment of X units from A to B
 		return t.createUser(stub, args)
 	} else if function == "deleteUser" {
-		// Deletes an entity from its state
 		return t.deleteUser(stub, args)
 	} else if function == "queryUserByEID" {
-		// the old "Query" is now implemtned in invoke
 		return t.queryUserByEID(stub, args)
 	} else if function == "queryUserByMSP" {
-		// the old "Query" is now implemtned in invoke
 		return t.queryUserByMSP(stub, args)
 	} else if function == "createPolicy" {
-		// the old "Query" is now implemtned in invoke
 		return t.createPolicy(stub, args)
 	} else if function == "deletePolicy" {
-		// the old "Query" is now implemtned in invoke
 		return t.deletePolicy(stub, args)
 	} else if function == "queryPolicy" {
-		// the old "Query" is now implemtned in invoke
 		return t.queryPolicy(stub, args)
 	}  else if function == "createPolicyDep" {
-		// the old "Query" is now implemtned in invoke
 		return t.createPolicyDep(stub, args)
 	} else if function == "deletePolicyDep" {
-		// the old "Query" is now implemtned in invoke
 		return t.deletePolicyDep(stub, args)
 	} else if function == "queryPolicyDep" {
-		// the old "Query" is now implemtned in invoke
 		return t.queryPolicyDep(stub, args)
 	}else if function == "createDep" {
-		// the old "Query" is now implemtned in invoke
 		return t.createDep(stub, args)
 	}else if function == "deleteDep" {
-		// the old "Query" is now implemtned in invoke
 		return t.deleteDep(stub, args)
 	}else if function == "queryDep" {
-		// the old "Query" is now implemtned in invoke
 		return t.queryDep(stub, args)
 	}else if function == "createResource" {
-		// the old "Query" is now implemtned in invoke
 		return t.createResource(stub, args)
 	}else if function == "deleteResource" {
-		// the old "Query" is now implemtned in invoke
 		return t.deleteResource(stub, args)
 	}else if function == "queryResource" {
-		// the old "Query" is now implemtned in invoke
 		return t.queryResource(stub, args)
 	}/*else if function == "queryDepByMSP" {
 		// the old "Query" is now implemtned in invoke
