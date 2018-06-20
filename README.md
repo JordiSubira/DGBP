@@ -12,4 +12,4 @@ privado, HyperLedger Fabric, en un escenario acotado entre varias empresas. En e
 las empresas establecen unas ciertas relaciones de confianza entre ellas para permitir el acceso
 de usuarios de otras organizaciones a sus recursos computacionales.
 
-We used source code from HyperLedger Fabric public repository (https://github.com/hyperledger/fabric-samples) and based the development on some fabric-samples.  
+We based the development on some fabric-samples and used source code from HyperLedger Fabric public repository (https://github.com/hyperledger/fabric-samples).  
