@@ -14,7 +14,7 @@ type SimpleChaincode struct {
 }
 
 type User struct{
-	ObjectType string `json:"docType"` /
+	ObjectType string `json:"docType"`
 	PKI string `json:"pki"`
 	EID string `json:"eid"`
 	MSP string `json:"msp"`
